@@ -1,4 +1,4 @@
-/* Modern Dark Theme for AgriChainX Platform */
+/* Modern Dark Theme for AgriChainX Platform - Mobile Responsive */
 * {
     margin: 0;
     padding: 0;
@@ -13,7 +13,10 @@ body {
     overflow-x: hidden;
 }
 
-/* Navigation */
+/* ============================================
+   NAVIGATION
+   ============================================ */
+
 .navbar {
     background: rgba(26, 26, 26, 0.95);
     backdrop-filter: blur(10px);
@@ -67,7 +70,47 @@ body {
     color: #1a1a1a;
 }
 
-/* Sections */
+/* ============================================
+   HAMBURGER MENU - HIDDEN ON DESKTOP
+   ============================================ */
+
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+    flex-direction: column;
+    gap: 5px;
+    transition: all 0.3s ease;
+}
+
+.hamburger-line {
+    width: 25px;
+    height: 3px;
+    background-color: #00c851;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+/* Hamburger animation when active */
+.hamburger.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(7px, 7px);
+}
+
+.hamburger.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* ============================================
+   SECTIONS
+   ============================================ */
+
 .section {
     display: none;
     min-height: 100vh;
@@ -80,7 +123,10 @@ body {
     display: block;
 }
 
-/* Hero Section */
+/* ============================================
+   HERO SECTION
+   ============================================ */
+
 .hero {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -138,7 +184,10 @@ body {
     font-size: 0.9rem;
 }
 
-/* Buttons */
+/* ============================================
+   BUTTONS
+   ============================================ */
+
 .btn {
     padding: 1rem 2rem;
     border: none;
@@ -179,7 +228,10 @@ body {
     font-size: 1.1rem;
 }
 
-/* Cards */
+/* ============================================
+   CARDS
+   ============================================ */
+
 .card {
     background: linear-gradient(135deg, #2d2d2d, #1a1a1a);
     border: 1px solid #333;
@@ -211,20 +263,23 @@ body {
     color: #00c851;
 }
 
-/* Dashboard */
-.dashboard-header {
+/* ============================================
+   DASHBOARD
+   ============================================ */
+
+.dashboard-header, .analytics-header, .blockchain-header, .upload-header, .scan-header {
     text-align: center;
     margin-bottom: 3rem;
 }
 
-.dashboard-header h2 {
+.dashboard-header h2, .analytics-header h2, .blockchain-header h2, .upload-header h2, .scan-header h2 {
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 1rem;
     color: #00c851;
 }
 
-.dashboard-grid {
+.dashboard-grid, .analytics-grid, .blockchain-grid {
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 2rem;
@@ -321,22 +376,13 @@ body {
     border: 1px solid #00c851;
 }
 
-/* Upload Form */
+/* ============================================
+   UPLOAD FORM
+   ============================================ */
+
 .upload-container {
     max-width: 800px;
     margin: 0 auto;
-}
-
-.upload-header {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-.upload-header h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: #00c851;
 }
 
 .upload-form {
@@ -402,7 +448,10 @@ body {
     display: block;
 }
 
-/* Modal */
+/* ============================================
+   MODALS
+   ============================================ */
+
 .modal {
     display: none;
     position: fixed;
@@ -522,18 +571,14 @@ body {
     color: #00c851;
 }
 
-/* QR Scanner */
+/* ============================================
+   QR SCANNER
+   ============================================ */
+
 .scan-container {
     max-width: 600px;
     margin: 0 auto;
     text-align: center;
-}
-
-.scan-header h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: #00c851;
 }
 
 .qr-scanner {
@@ -584,24 +629,9 @@ body {
     100% { top: 100%; }
 }
 
-/* Analytics */
-.analytics-header {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-.analytics-header h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: #00c851;
-}
-
-.analytics-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-}
+/* ============================================
+   ANALYTICS & BLOCKCHAIN
+   ============================================ */
 
 .leaderboard {
     display: flex;
@@ -649,25 +679,6 @@ body {
 .chart-placeholder i {
     font-size: 3rem;
     margin-bottom: 1rem;
-}
-
-/* Blockchain */
-.blockchain-header {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-.blockchain-header h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: #00c851;
-}
-
-.blockchain-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 2rem;
 }
 
 .transaction-list {
@@ -783,45 +794,11 @@ body {
     font-weight: 600;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .nav-menu {
-        display: none;
-    }
-
-    .hero {
-        grid-template-columns: 1fr;
-        text-align: center;
-    }
-
-    .hero-content h1 {
-        font-size: 2.5rem;
-    }
-
-    .dashboard-grid,
-    .analytics-grid,
-    .blockchain-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-
-    .modal-content {
-        width: 95%;
-        margin: 2% auto;
-    }
-
-    .product-header {
-        flex-direction: column;
-        text-align: center;
-    }
-}
-
-/* Smooth Transitions */
-* {
-    transition: all 0.3s ease;
+.verification-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
 }
 
 /* Custom Scrollbar */
@@ -840,4 +817,187 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
     background: #00ff57;
+}
+
+/* ============================================
+   MOBILE RESPONSIVE (768px and below)
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Show hamburger menu on mobile */
+    .hamburger {
+        display: flex;
+    }
+
+    /* Transform nav menu into mobile sidebar */
+    .nav-menu {
+        position: fixed;
+        top: 70px;
+        right: -100%;
+        width: 80%;
+        max-width: 300px;
+        height: calc(100vh - 70px);
+        background: rgba(26, 26, 26, 0.98);
+        backdrop-filter: blur(10px);
+        border-left: 1px solid #333;
+        flex-direction: column;
+        padding: 2rem 0;
+        transition: right 0.3s ease;
+        overflow-y: auto;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+        gap: 0;
+    }
+
+    /* Show menu when active */
+    .nav-menu.active {
+        right: 0;
+    }
+
+    /* Mobile nav links styling */
+    .nav-link {
+        width: 100%;
+        padding: 1rem 2rem;
+        border-radius: 0;
+        text-align: left;
+        border-bottom: 1px solid #333;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+        background: linear-gradient(90deg, #00c851, transparent);
+        border-left: 4px solid #00c851;
+    }
+
+    /* Adjust brand for mobile */
+    .nav-brand {
+        font-size: 1.2rem;
+    }
+
+    .nav-brand span {
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Hero section mobile adjustments */
+    .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 2rem 0;
+    }
+
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+    }
+
+    /* Dashboard grid mobile */
+    .dashboard-grid,
+    .analytics-grid,
+    .blockchain-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    /* Form row mobile */
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    /* Modal content mobile */
+    .modal-content {
+        width: 95%;
+        margin: 5% auto;
+        max-height: 90vh;
+    }
+
+    .modal-content.large {
+        width: 95%;
+    }
+
+    /* Product header mobile */
+    .product-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    /* Verification grid mobile */
+    .verification-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Section padding mobile */
+    .section {
+        padding: 5rem 1rem 2rem;
+    }
+
+    /* Upload form mobile */
+    .upload-form {
+        padding: 2rem 1.5rem;
+    }
+
+    /* Card padding mobile */
+    .card {
+        padding: 1.5rem;
+    }
+
+    /* Stat cards mobile */
+    .hero-stats {
+        width: 100%;
+    }
+
+    .stat-card {
+        padding: 1.5rem;
+    }
+}
+
+/* ============================================
+   SMALL MOBILE (480px and below)
+   ============================================ */
+
+@media (max-width: 480px) {
+    .hero-content h1 {
+        font-size: 1.75rem;
+    }
+
+    .nav-brand span {
+        display: none;
+    }
+
+    .nav-brand {
+        font-size: 1.5rem;
+    }
+
+    .btn {
+        padding: 0.875rem 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .modal-content {
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        max-height: 100vh;
+    }
+
+    .dashboard-header h2,
+    .analytics-header h2,
+    .blockchain-header h2,
+    .upload-header h2,
+    .scan-header h2 {
+        font-size: 2rem;
+    }
 }

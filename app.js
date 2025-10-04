@@ -126,7 +126,63 @@ const sampleData = {
     ]
 };
 
-// Navigation functionality
+// ============================================
+// HAMBURGER MENU FUNCTIONALITY
+// ============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    // Toggle hamburger menu
+    if (hamburger) {
+        hamburger.addEventListener('click', function() {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+    }
+
+    // Close menu when clicking on a nav link (mobile)
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
+        });
+    });
+
+    // Close menu when clicking outside (mobile)
+    document.addEventListener('click', function(event) {
+        const isClickInsideNav = navMenu.contains(event.target);
+        const isClickOnHamburger = hamburger.contains(event.target);
+
+        if (!isClickInsideNav && !isClickOnHamburger && navMenu.classList.contains('active')) {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        }
+    });
+
+    // Initialize navigation
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const sectionId = this.dataset.section;
+            showSection(sectionId);
+        });
+    });
+
+    // Load initial data
+    loadDashboardData();
+    loadAnalyticsData();
+    loadBlockchainData();
+});
+
+// ============================================
+// NAVIGATION FUNCTIONALITY
+// ============================================
+
 function showSection(sectionId) {
     // Hide all sections
     const sections = document.querySelectorAll('.section');
@@ -148,28 +204,10 @@ function showSection(sectionId) {
             link.classList.add('active');
         }
     });
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
-// Initialize navigation
-// Initialize navigation
-document.addEventListener('DOMContentLoaded', function() {
-    // Show home section by default (redundant if HTML already has active class, but ensures consistency)
-    showSection('home');
-    
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const sectionId = this.dataset.section;
-            showSection(sectionId);
-        });
-    });
-
-    // Load initial data
-    loadDashboardData();
-    loadAnalyticsData();
-    loadBlockchainData();
-});
 
 // Load dashboard data
 function loadDashboardData() {
@@ -241,7 +279,10 @@ function loadBlockchainData() {
     });
 }
 
-// AI Analysis Processing
+// ============================================
+// AI ANALYSIS PROCESSING
+// ============================================
+
 function processUpload() {
     const productName = document.getElementById('productName').value;
     const batchId = document.getElementById('batchId').value;
@@ -317,7 +358,10 @@ function createBlockchainRecord() {
     }, 2000);
 }
 
-// QR Code scanning simulation
+// ============================================
+// QR CODE SCANNING
+// ============================================
+
 function simulateScan() {
     // Simulate scanning delay
     const scanButton = document.querySelector('button[onclick="simulateScan()"]');
@@ -362,7 +406,7 @@ function showVerificationResults() {
             </div>
         </div>
 
-        <div class="verification-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+        <div class="verification-grid">
             <div class="card">
                 <div class="card-header">
                     <h4>AI Analysis</h4>
@@ -434,7 +478,10 @@ function showVerificationResults() {
     modal.style.display = 'block';
 }
 
-// Modal controls
+// ============================================
+// MODAL CONTROLS
+// ============================================
+
 function closeModal() {
     const modals = document.querySelectorAll('.modal');
     modals.forEach(modal => {
