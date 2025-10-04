@@ -695,18 +695,19 @@ body {
 }
 
 .tx-hash {
-    color: #00c851;
-    font-family: 'Courier New', monospace;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
+    word-break: break-all;        /* Breaks long hashes */
+    overflow-wrap: break-word;    /* Wraps text properly */
+    font-size: 0.75rem;          /* Smaller on mobile */
+    line-height: 1.5;            /* Better readability */
 }
 
+
 .tx-details {
-    display: flex;
-    justify-content: space-between;
-    color: #cccccc;
-    font-size: 0.9rem;
+    flex-direction: column;       /* Stack vertically on mobile */
+    gap: 0.5rem;                 /* Add spacing */
+    align-items: flex-start;     /* Align left */
 }
+
 
 .network-stats {
     display: flex;
@@ -722,11 +723,10 @@ body {
 }
 
 .stat-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #00c851;
-    margin-bottom: 0.5rem;
+    font-size: 1.25rem;          /* Reduced size for mobile */
+    word-break: break-word;      /* Wrap long numbers */
 }
+
 
 /* Verification Results */
 .verification-content {
@@ -908,9 +908,9 @@ body {
     .dashboard-grid,
     .analytics-grid,
     .blockchain-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
+    grid-template-columns: 1fr !important;  /* Force single column */
+}
+
 
     /* Form row mobile */
     .form-row {
