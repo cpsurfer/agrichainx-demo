@@ -235,36 +235,122 @@
         </div>
     </div>
 
-    <!-- Analytics Section -->
-    <section id="analytics" class="section">
-        <div class="analytics-header">
-            <h2>Platform Analytics</h2>
-            <p>Monitor platform performance and trends</p>
-        </div>
-        <div class="analytics-grid">
-            <div class="card">
-                <div class="card-header">
-                    <h3>Trust Score Leaderboard</h3>
-                    <i class="fas fa-trophy"></i>
-                </div>
-                <div class="leaderboard" id="trustLeaderboard">
-                    <!-- Populated by JavaScript -->
-                </div>
+<!-- Analytics Section -->
+<section id="analytics" class="section">
+    <div class="analytics-header">
+        <h2>Platform Analytics</h2>
+        <p>Monitor platform performance and trends</p>
+    </div>
+    <div class="analytics-grid">
+        <div class="card">
+            <div class="card-header">
+                <h3>Trust Score Leaderboard</h3>
+                <i class="fas fa-trophy"></i>
             </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3>Verification Trends</h3>
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div class="trends-chart">
-                    <div class="chart-placeholder">
-                        <i class="fas fa-chart-bar"></i>
-                        <p>Analytics Chart Placeholder</p>
+            <div class="leaderboard" id="trustLeaderboard">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h3>Food Impact Analysis</h3>
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <div class="trends-chart">
+                <div class="bar-chart-container">
+                    <!-- Y-axis labels -->
+                    <div class="y-axis">
+                        <span class="y-label">10</span>
+                        <span class="y-label">8</span>
+                        <span class="y-label">6</span>
+                        <span class="y-label">4</span>
+                        <span class="y-label">2</span>
+                        <span class="y-label">0</span>
+                    </div>
+                    
+                    <!-- Chart area -->
+                    <div class="chart-area">
+                        <!-- Chart Title -->
+                        <div class="chart-title">Health vs Economic Impact</div>
+                        
+                        <!-- Grid lines -->
+                        <div class="chart-grid"></div>
+                        
+                        <!-- Bar Groups -->
+                        <div class="bar-groups">
+                            <div class="bar-group">
+                                <div class="bar-pair">
+                                    <div class="bar health-bar" style="height: 90%;">9</div>
+                                    <div class="bar economic-bar" style="height: 70%;">7</div>
+                                </div>
+                                <div class="bar-label">Milk<br>Adulteration</div>
+                            </div>
+                            
+                            <div class="bar-group">
+                                <div class="bar-pair">
+                                    <div class="bar health-bar" style="height: 80%;">8</div>
+                                    <div class="bar economic-bar" style="height: 60%;">6</div>
+                                </div>
+                                <div class="bar-label">Fake<br>Spices</div>
+                            </div>
+                            
+                            <div class="bar-group">
+                                <div class="bar-pair">
+                                    <div class="bar health-bar" style="height: 70%;">7</div>
+                                    <div class="bar economic-bar" style="height: 80%;">8</div>
+                                </div>
+                                <div class="bar-label">Counterfeit<br>Honey</div>
+                            </div>
+                            
+                            <div class="bar-group">
+                                <div class="bar-pair">
+                                    <div class="bar health-bar" style="height: 40%;">4</div>
+                                    <div class="bar economic-bar" style="height: 70%;">7</div>
+                                </div>
+                                <div class="bar-label">False<br>Organic</div>
+                            </div>
+                            
+                            <div class="bar-group">
+                                <div class="bar-pair">
+                                    <div class="bar health-bar" style="height: 70%;">7</div>
+                                    <div class="bar economic-bar" style="height: 60%;">6</div>
+                                </div>
+                                <div class="bar-label">Spoiled<br>Goods</div>
+                            </div>
+                            
+                            <div class="bar-group">
+                                <div class="bar-pair">
+                                    <div class="bar health-bar" style="height: 100%;">10</div>
+                                    <div class="bar economic-bar" style="height: 90%;">9</div>
+                                </div>
+                                <div class="bar-label">Counterfeit<br>Alcohol</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                
+                <!-- X-axis label -->
+                <div class="x-axis-label">Food Problem Categories</div>
             </div>
+            <div class="chart-legend-row">
+        <div class="legend-item">
+            <div class="legend-box health-legend"></div>
+            <span>Health Impact Score</span>
         </div>
-    </section>
+        <div class="legend-item">
+            <div class="legend-box economic-legend"></div>
+            <span>Economic Impact Score</span>
+        </div>
+    </div>
+        </div>
+        
+    </div>
+    
+    <!-- Legend Row Below -->
+    
+</section>
+
+
 
     <!-- Blockchain Section -->
     <section id="blockchain" class="section">
