@@ -392,5 +392,82 @@
     </section>
 
     <script src="app.js"></script>
+
+    <!-- Improved Chatbot Widget -->
+<!-- Add this before closing </body> tag -->
+
+<div class="chatbot-widget">
+    <!-- White Circle with Green Border -->
+    <button class="chatbot-toggle" id="chatbotToggle">
+        <i class="fas fa-robot"></i>
+    </button>
+
+    <!-- Dark Background Chat Container -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <!-- Green Header with Clear Chat and Close Buttons -->
+        <div class="chatbot-header">
+            <div class="chatbot-title">
+                <i class="fas fa-robot"></i>
+                <span>AgriChainX Bot</span>
+            </div>
+            <div class="chatbot-actions">
+                <button class="clear-chat-btn" id="clearChat" title="Clear Chat">
+                    <i class="fas fa-trash"></i>
+                </button>
+                <button class="chatbot-close" id="chatbotClose" title="Close">×</button>
+            </div>
+        </div>
+
+        <!-- Dark Background Chat Messages -->
+        <div class="chatbot-messages" id="chatbotMessages">
+            <!-- Initial Greeting -->
+            <div class="message bot-message">
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    👋 <strong>Hello!</strong> I'm your AgriChainX assistant.
+                    <br><br>
+                    I can help you with:
+                    <ul>
+                        <li>📦 Check status</li>
+                        <li>⏰ Set reminders</li>
+                        <li>📝 Report complaints</li>
+                        <li>📊 View analytics</li>
+                    </ul>
+                    How can I assist you today?
+                </div>
+            </div>
+        </div>
+
+        <!-- Horizontal Scrolling Suggestions with Arrows -->
+        <div class="suggestions-wrapper">
+            <button class="scroll-arrow left" id="scrollLeft">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="chatbot-suggestions" id="chatbotSuggestions">
+                <div class="suggestion-chip">Check status</div>
+                <div class="suggestion-chip">Set reminder</div>
+                <div class="suggestion-chip">Report complaint</div>
+                <div class="suggestion-chip">Analytics</div>
+                <div class="suggestion-chip">Verification</div>
+                <div class="suggestion-chip">Purity scores</div>
+                <div class="suggestion-chip">Upload product</div>
+                <div class="suggestion-chip">Help</div>
+            </div>
+            <button class="scroll-arrow right" id="scrollRight">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Input Area with Green Border -->
+        <div class="chatbot-input">
+            <input type="text" id="chatbotInput" placeholder="Type your message...">
+            <button class="chatbot-send" id="chatbotSend">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

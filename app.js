@@ -510,3 +510,456 @@ document.getElementById('imageUpload')?.addEventListener('change', function(e) {
         `;
     }
 });
+
+// ============================================
+// IMPROVED CHATBOT - Smart Responses + Features
+// ============================================
+
+(function() {
+    'use strict';
+
+    let userPreferences = {
+        favoriteTopics: [],
+        recentQueries: [],
+        reminders: [],
+        conversationState: null,
+        waitingFor: null,
+        tempData: {}
+    };
+
+    function loadUserPreferences() {
+        try {
+            const saved = localStorage.getItem('agriChainXPreferences');
+            if (saved) {
+                userPreferences = JSON.parse(saved);
+            }
+        } catch (e) {
+            console.error('Error loading preferences:', e);
+        }
+    }
+
+    function saveUserPreferences() {
+        try {
+            localStorage.setItem('agriChainXPreferences', JSON.stringify(userPreferences));
+        } catch (e) {
+            console.error('Error saving preferences:', e);
+        }
+    }
+
+    function initWhenReady() {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeChatbot);
+        } else {
+            initializeChatbot();
+        }
+    }
+
+    function initializeChatbot() {
+        console.log('🤖 Initializing chatbot...');
+
+        const chatbotToggle = document.getElementById('chatbotToggle');
+        const chatbotClose = document.getElementById('chatbotClose');
+        const chatbotContainer = document.getElementById('chatbotContainer');
+        const chatbotSend = document.getElementById('chatbotSend');
+        const chatbotInput = document.getElementById('chatbotInput');
+        const clearChat = document.getElementById('clearChat');
+
+        if (!chatbotToggle || !chatbotContainer) {
+            console.error('❌ Chatbot elements not found!');
+            return;
+        }
+
+        console.log('✅ Chatbot elements found');
+
+        // Open chatbot
+        chatbotToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            console.log('🔵 Opening chatbot');
+            chatbotContainer.classList.add('active');
+            chatbotToggle.style.display = 'none';
+        });
+
+        // Close chatbot
+        if (chatbotClose) {
+            chatbotClose.addEventListener('click', function(e) {
+                e.stopPropagation();
+                closeChatbot();
+            });
+        }
+
+        // Clear chat
+        if (clearChat) {
+            clearChat.addEventListener('click', function(e) {
+                e.stopPropagation();
+                clearChatMessages();
+            });
+        }
+
+        // Click outside to close
+        document.addEventListener('click', function(e) {
+            if (chatbotContainer.classList.contains('active')) {
+                if (!chatbotContainer.contains(e.target) && !chatbotToggle.contains(e.target)) {
+                    closeChatbot();
+                }
+            }
+        });
+
+        // Prevent closing when clicking inside
+        chatbotContainer.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Send message
+        if (chatbotSend) {
+            chatbotSend.addEventListener('click', sendMessage);
+        }
+
+        if (chatbotInput) {
+            chatbotInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        }
+
+        // Scroll arrows
+        setupScrollArrows();
+        attachSuggestionListeners();
+        loadUserPreferences();
+        updateSuggestions();
+
+        console.log('✅ Chatbot initialized!');
+    }
+
+    function closeChatbot() {
+        console.log('🔴 Closing chatbot');
+        const chatbotContainer = document.getElementById('chatbotContainer');
+        const chatbotToggle = document.getElementById('chatbotToggle');
+
+        chatbotContainer.classList.remove('active');
+        chatbotToggle.style.display = 'flex';
+
+        userPreferences.conversationState = null;
+        userPreferences.waitingFor = null;
+        userPreferences.tempData = {};
+    }
+
+    function clearChatMessages() {
+        const messagesContainer = document.getElementById('chatbotMessages');
+        if (!messagesContainer) return;
+
+        messagesContainer.innerHTML = `
+            <div class="message bot-message">
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    🔄 <strong>Chat Cleared!</strong><br><br>
+                    How can I help you today?
+                </div>
+            </div>
+        `;
+
+        userPreferences.conversationState = null;
+        userPreferences.waitingFor = null;
+        userPreferences.tempData = {};
+
+        console.log('🗑️ Chat cleared');
+    }
+
+    function setupScrollArrows() {
+        const container = document.getElementById('chatbotSuggestions');
+        const leftArrow = document.getElementById('scrollLeft');
+        const rightArrow = document.getElementById('scrollRight');
+
+        if (!container || !leftArrow || !rightArrow) return;
+
+        leftArrow.addEventListener('click', function() {
+            container.scrollBy({ left: -150, behavior: 'smooth' });
+        });
+
+        rightArrow.addEventListener('click', function() {
+            container.scrollBy({ left: 150, behavior: 'smooth' });
+        });
+    }
+
+    function attachSuggestionListeners() {
+        const suggestionChips = document.querySelectorAll('.suggestion-chip');
+        suggestionChips.forEach(function(chip) {
+            chip.addEventListener('click', function() {
+                const input = document.getElementById('chatbotInput');
+                if (input) {
+                    input.value = chip.textContent;
+                    sendMessage();
+                }
+            });
+        });
+    }
+
+    function sendMessage() {
+        const input = document.getElementById('chatbotInput');
+        if (!input) return;
+
+        const message = input.value.trim();
+        if (!message) return;
+
+        console.log('📤 Sending:', message);
+
+        addMessage(message, 'user');
+        input.value = '';
+
+        userPreferences.recentQueries.unshift(message);
+        userPreferences.recentQueries = userPreferences.recentQueries.slice(0, 10);
+
+        showTypingIndicator();
+
+        setTimeout(function() {
+            hideTypingIndicator();
+            const response = processMessage(message);
+            addMessage(response, 'bot');
+            updateSuggestions();
+            saveUserPreferences();
+        }, 1500);
+    }
+
+    function showTypingIndicator() {
+        const messagesContainer = document.getElementById('chatbotMessages');
+        if (!messagesContainer) return;
+
+        const existing = document.querySelector('.typing-indicator-wrapper');
+        if (existing) existing.remove();
+
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message bot-message typing-indicator-wrapper';
+        typingDiv.innerHTML = `
+            <div class="message-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="typing-indicator active">
+                <div class="buffer-icon"></div>
+                <span>Thinking...</span>
+            </div>
+        `;
+
+        messagesContainer.appendChild(typingDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function hideTypingIndicator() {
+        const typingWrapper = document.querySelector('.typing-indicator-wrapper');
+        if (typingWrapper) {
+            typingWrapper.remove();
+        }
+    }
+
+    function addMessage(text, sender) {
+        const messagesContainer = document.getElementById('chatbotMessages');
+        if (!messagesContainer) return;
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message ' + sender + '-message';
+
+        const avatar = document.createElement('div');
+        avatar.className = 'message-avatar';
+        avatar.innerHTML = sender === 'bot' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
+
+        const content = document.createElement('div');
+        content.className = 'message-content';
+        content.innerHTML = text;
+
+        messageDiv.appendChild(avatar);
+        messageDiv.appendChild(content);
+        messagesContainer.appendChild(messageDiv);
+
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function processMessage(message) {
+        const lowerMsg = message.toLowerCase();
+
+        // Handle conversation states first
+        if (userPreferences.waitingFor) {
+            return handleFollowUp(message);
+        }
+
+        // Check status
+        if (lowerMsg.includes('status')) {
+            userPreferences.conversationState = 'checking_status';
+            userPreferences.waitingFor = 'status_query';
+            return "📦 <strong>Check Status</strong><br><br>What would you like to check the status of?<br><br>Examples: Product verification, Batch processing, Quality check";
+        }
+
+        // Set reminder
+        if (lowerMsg.includes('reminder')) {
+            userPreferences.conversationState = 'setting_reminder';
+            userPreferences.waitingFor = 'reminder_datetime';
+            return "⏰ <strong>Set Reminder</strong><br><br>When should I remind you?<br><br>Examples:<br>• Tomorrow 9:00 AM<br>• Oct 15 3:00 PM<br>• Next week 10:30 AM";
+        }
+
+        // Report complaint
+        if (lowerMsg.includes('complaint')) {
+            userPreferences.conversationState = 'reporting_complaint';
+            userPreferences.waitingFor = 'complaint_description';
+            return "📝 <strong>Report Complaint</strong><br><br>Please describe your complaint or issue:";
+        }
+
+        // Analytics
+        if (lowerMsg.includes('analytic') || lowerMsg.includes('report') || lowerMsg.includes('dashboard')) {
+            return "📊 <strong>Analytics</strong><br><br>You can view:<br>• Trust Score Leaderboard<br>• Food Impact Analysis<br>• Verification trends<br><br>Click the Analytics tab!";
+        }
+
+        // Verification
+        if (lowerMsg.includes('verify') || lowerMsg.includes('verification') || lowerMsg.includes('authenticate')) {
+            return "✅ <strong>Verification</strong><br><br>Our process includes:<br>• AI-powered analysis<br>• Blockchain records<br>• Lab testing<br>• Real-time scoring";
+        }
+
+        // Purity score
+        if (lowerMsg.includes('purity') || lowerMsg.includes('score') || lowerMsg.includes('rating')) {
+            return "🎯 <strong>Purity Scores</strong><br><br>• 90-100: Excellent<br>• 75-89: Good<br>• 60-74: Fair<br>• Below 60: Poor<br><br>Platform average: 95%";
+        }
+
+        // Upload
+        if (lowerMsg.includes('upload') || lowerMsg.includes('submit') || lowerMsg.includes('add product')) {
+            return "📤 <strong>Upload Product</strong><br><br>Steps:<br>1. Go to 'Upload Data'<br>2. Enter product details<br>3. Upload image<br>4. Add test data<br>5. Click 'Analyze'";
+        }
+
+        // Scan/QR
+        if (lowerMsg.includes('scan') || lowerMsg.includes('qr')) {
+            return "📱 <strong>QR Scanner</strong><br><br>Features:<br>• Instant verification<br>• Supply chain history<br>• Purity scores<br>• Certifications<br><br>Go to 'Scan Product'!";
+        }
+
+        // Blockchain
+        if (lowerMsg.includes('blockchain') || lowerMsg.includes('chain') || lowerMsg.includes('hash')) {
+            return "⛓️ <strong>Blockchain</strong><br><br>Every product includes:<br>• Unique hash<br>• Timestamp<br>• Producer info<br>• Verification results<br><br>Check Blockchain Explorer!";
+        }
+
+        // Food safety
+        if (lowerMsg.includes('safe') || lowerMsg.includes('contamination') || lowerMsg.includes('adulteration')) {
+            return "🛡️ <strong>Food Safety</strong><br><br>Common issues we detect:<br>• Milk adulteration<br>• Fake spices<br>• Counterfeit products<br>• Pesticide residue<br><br>Our AI identifies these!";
+        }
+
+        // Trust score
+        if (lowerMsg.includes('trust') || lowerMsg.includes('leaderboard')) {
+            return "🏆 <strong>Trust Score</strong><br><br>Top producers:<br>• Pure Grain Mills: 95<br>• Green Valley Farms: 92<br>• Fresh Harvest Co-op: 88<br><br>Check Analytics for full list!";
+        }
+
+        // Producer
+        if (lowerMsg.includes('producer') || lowerMsg.includes('supplier') || lowerMsg.includes('farmer')) {
+            return "👨‍🌾 <strong>Producers</strong><br><br>We verify producers based on:<br>• Product quality<br>• Consistency<br>• Lab results<br>• Customer feedback<br><br>View Dashboard for details!";
+        }
+
+        // Help
+        if (lowerMsg.includes('help') || lowerMsg === '?') {
+            return "💡 <strong>How I Can Help</strong><br><br>📦 Check status<br>⏰ Set reminders<br>📝 Report complaints<br>📊 View analytics<br>✅ Verification info<br>🎯 Purity scores";
+        }
+
+        // Greeting
+        if (lowerMsg.includes('hi') || lowerMsg.includes('hello') || lowerMsg.includes('hey')) {
+            return "👋 <strong>Hello!</strong><br><br>I'm your AgriChainX assistant. How can I help you today?";
+        }
+
+        // Thanks
+        if (lowerMsg.includes('thank') || lowerMsg.includes('thanks')) {
+            return "😊 You're welcome! Anything else I can help with?";
+        }
+
+        // Default - smart response based on keywords
+        if (lowerMsg.includes('what') || lowerMsg.includes('how') || lowerMsg.includes('why')) {
+            return "🤔 <strong>I can help with:</strong><br><br>• Product verification<br>• Status checking<br>• Setting reminders<br>• Reporting issues<br><br>Try: 'Check status' or 'Help'";
+        }
+
+        // Generic fallback
+        return "💬 <strong>I understand you're asking about:</strong> '" + message + "'<br><br>Try:<br>• 'Check status'<br>• 'Set reminder'<br>• 'Report complaint'<br>• 'Help'";
+    }
+
+    function handleFollowUp(message) {
+        const state = userPreferences.conversationState;
+        const waitingFor = userPreferences.waitingFor;
+
+        // Status flow
+        if (state === 'checking_status' && waitingFor === 'status_query') {
+            const statuses = ['✅ Completed', '⏳ In Progress', '🔄 Processing', '❌ Failed', '⚠️ Pending Review'];
+            const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+            const progress = Math.floor(Math.random() * 100) + 1;
+
+            userPreferences.conversationState = null;
+            userPreferences.waitingFor = null;
+
+            return "📊 <strong>Status Update</strong><br><br>Query: <strong>" + message + "</strong><br><br>Status: " + randomStatus + "<br>Progress: " + progress + "%<br>Last updated: Just now<br><br>Need anything else?";
+        }
+
+        // Reminder - Step 1: Got date/time
+        if (state === 'setting_reminder' && waitingFor === 'reminder_datetime') {
+            userPreferences.tempData.datetime = message;
+            userPreferences.waitingFor = 'reminder_task';
+            return "📝 <strong>What should I remind you about?</strong><br><br>Enter task description:";
+        }
+
+        // Reminder - Step 2: Got task
+        if (state === 'setting_reminder' && waitingFor === 'reminder_task') {
+            const datetime = userPreferences.tempData.datetime;
+            const task = message;
+
+            const reminder = {
+                id: Date.now(),
+                datetime: datetime,
+                task: task,
+                created: new Date().toISOString()
+            };
+
+            userPreferences.reminders.push(reminder);
+            userPreferences.conversationState = null;
+            userPreferences.waitingFor = null;
+            userPreferences.tempData = {};
+
+            saveUserPreferences();
+
+            return "✅ <strong>Reminder Set!</strong><br><br>📅 Date & Time: <strong>" + datetime + "</strong><br>📝 Task: <strong>" + task + "</strong><br><br>I'll notify you then! 🔔";
+        }
+
+        // Complaint flow
+        if (state === 'reporting_complaint' && waitingFor === 'complaint_description') {
+            const complaintId = 'CMP-' + Date.now();
+
+            userPreferences.tempData.lastComplaint = {
+                id: complaintId,
+                description: message,
+                timestamp: new Date().toISOString()
+            };
+
+            userPreferences.conversationState = null;
+            userPreferences.waitingFor = null;
+
+            saveUserPreferences();
+
+            return "✅ <strong>Complaint Reported</strong><br><br>ID: <strong>" + complaintId + "</strong><br><br>Description: <em>" + message + "</em><br><br>Thank you for your feedback!<br>Our team will review this shortly.";
+        }
+
+        return "🤔 I didn't quite get that. Can you try again?";
+    }
+
+    function updateSuggestions() {
+        const suggestionsContainer = document.getElementById('chatbotSuggestions');
+        if (!suggestionsContainer) return;
+
+        const suggestions = [
+            'Check status',
+            'Set reminder', 
+            'Report complaint',
+            'Analytics',
+            'Verification',
+            'Purity scores',
+            'Upload product',
+            'Help'
+        ];
+
+        suggestionsContainer.innerHTML = suggestions.map(function(s) {
+            return '<div class="suggestion-chip">' + s + '</div>';
+        }).join('');
+
+        attachSuggestionListeners();
+    }
+
+    initWhenReady();
+
+})();
